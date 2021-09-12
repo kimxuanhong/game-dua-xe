@@ -15,15 +15,27 @@ void gotoxy(int x, int y);
 void Clearscreen();
 
 //Global and Static variables
+#define LONGITUDE 41
+#define LATITUDE 30
+#define VEHICLE_LENGTH 3
+
+int AVAILABLE_LONGITUDE =  LONGITUDE - 1;
+int AVAILABLE_LATITUDE =  LATITUDE;
+int HALF_AVAILABLE_LONGITUDE = AVAILABLE_LONGITUDE / 2;
+int MIN_POSITION_X = 1;
+int MIN_POSITION_Y = 1;
+int MAX_POSITION_X = AVAILABLE_LONGITUDE - VEHICLE_LENGTH;
+int MAX_POSITION_Y = AVAILABLE_LATITUDE - VEHICLE_LENGTH;
+
 int highScore = 0;
 int highMoney = 0;
 string userHighScore = "Nobody";
 
 
-void intMapGame(string mapGame[41][31], bool isEven){	
-	for(int y=0; y <= 30; y++){
-		for(int x=0; x <= 40; x++){
-			if(x == 0 || (x == 20 && (((y % 2) == 0) && isEven)) || x == 40){					
+void intMapGame(string mapGame[LONGITUDE][LATITUDE], bool isEven){	
+	for(int y=0; y < LATITUDE; y++){
+		for(int x=0; x < LONGITUDE; x++){
+			if(x == 0 || (x == HALF_AVAILABLE_LONGITUDE && (((y % 2) == 0) && isEven)) || x == AVAILABLE_LONGITUDE){					
 				mapGame[x][y] = "|";				
 			} else {
 				mapGame[x][y] = " ";
@@ -32,17 +44,17 @@ void intMapGame(string mapGame[41][31], bool isEven){
 	}
 }
 
-void drawMapGame(string mapGame[41][31]){
-	for(int y=0; y <= 30; y++){
+void drawMapGame(string mapGame[LONGITUDE][LATITUDE]){
+	for(int y=0; y < LATITUDE; y++){
 		string lineOfMap = "";
-		for(int x=0; x <= 40; x++){
+		for(int x=0; x < LONGITUDE; x++){
 			lineOfMap = lineOfMap + mapGame[x][y];
 		}
 		cout << lineOfMap << endl;
 	}
 }
 
-void setProtagonistToMapGame(int positionX, int positionY, string mapGame[41][31]){
+void setProtagonistToMapGame(int positionX, int positionY, string mapGame[LONGITUDE][LATITUDE]){
 	mapGame[positionX][positionY] = 		"O";
 	mapGame[positionX + 1][positionY] = 	"A";
 	mapGame[positionX + 2][positionY] = 	"O";
@@ -56,7 +68,7 @@ void setProtagonistToMapGame(int positionX, int positionY, string mapGame[41][31
 	mapGame[positionX + 2][positionY + 2] = "O";
 }
 
-void setVillainToMapGame(int positionX, int positionY, string mapGame[41][31]){
+void setVillainToMapGame(int positionX, int positionY, string mapGame[LONGITUDE][LATITUDE]){
 	mapGame[positionX][positionY] = 		"O";
 	mapGame[positionX + 1][positionY] = 	"-";
 	mapGame[positionX + 2][positionY] = 	"O";
@@ -70,11 +82,11 @@ void setVillainToMapGame(int positionX, int positionY, string mapGame[41][31]){
 	mapGame[positionX + 2][positionY + 2] = "O";
 }
 
-void setMoneyToMapGame(int positionX, int positionY, string mapGame[41][31]){
+void setMoneyToMapGame(int positionX, int positionY, string mapGame[LONGITUDE][LATITUDE]){
 	mapGame[positionX][positionY] = 		"$";
 }
 
-void showGameOver(string mapGame[41][31]){
+void showGameOver(string mapGame[LONGITUDE][LATITUDE]){
 	mapGame[15][15] = "G";
 	mapGame[16][15] = "A";
 	mapGame[17][15] = "M";
@@ -88,22 +100,22 @@ void showGameOver(string mapGame[41][31]){
 
 void remoteProtagonist(int &positionX, int &positionY){
 	if(GetAsyncKeyState(VK_LEFT)){
-	    if(positionX > 1){
+	    if(positionX > MIN_POSITION_X){
 	        positionX--;
 	    }
 	}
 	if(GetAsyncKeyState(VK_RIGHT)){
-	    if(positionX < 37) {
+	    if(positionX <= MAX_POSITION_X) {
 	        positionX++;
 	    }
 	}
 	if(GetAsyncKeyState(VK_UP)){
-	    if(positionY > 0){
+	    if(positionY > MIN_POSITION_Y){
 	        positionY--;
 	    }
 	}
 	if(GetAsyncKeyState(VK_DOWN)){
-	    if(positionY < 28){
+	    if(positionY < MAX_POSITION_Y){
 	        positionY++;
 	    }
 	}
@@ -112,7 +124,7 @@ void remoteProtagonist(int &positionX, int &positionY){
 bool validCollision(int positionX, int positionY, int positionXOfVillain, int positionYOfVillain){
 	int collisionX = abs(positionX - positionXOfVillain);
     int collisionY = abs(positionY - positionYOfVillain);
-    return collisionX < 3 && collisionY < 3;
+    return collisionX < VEHICLE_LENGTH && collisionY < VEHICLE_LENGTH;
 }
 
 void showScore(int score, int money, int level){
@@ -125,19 +137,19 @@ void showScore(int score, int money, int level){
 }
 
 void sumScoreAndMoveVillain(int &positionX, int &positionY, int &score){
-    if(positionY > 29) {
+    if(positionY >= AVAILABLE_LATITUDE) {
     	++score;
     	positionY = rand() % 5; // rand from 0 to 5
-     	positionX = 1 + rand() % 37; // rand from 1 to 37	
+     	positionX = MIN_POSITION_X + rand() % (MAX_POSITION_X - 1); // rand from 1 to 37	
 	} else {
 		++positionY;
 	}
 }
 
 void moveMoney(int &positionX, int &positionY){
-    if(positionY >= 30) {
+    if(positionY >= AVAILABLE_LATITUDE) {
     	positionY = rand() % 5; // rand from 0 to 5
-     	positionX = 1 + rand() % 40; // rand from 1 to 37	
+     	positionX = MIN_POSITION_X + rand() % (AVAILABLE_LATITUDE - 2); // rand from 1 to 37	
 	} else {
 		++positionY;
 	}
@@ -145,10 +157,10 @@ void moveMoney(int &positionX, int &positionY){
 
 void sumMoney(int positionX, int positionY, int &positionXOfMoney, int &positionYOfMoney, int &money){
 	if(	(positionX == positionXOfMoney && positionY == positionYOfMoney) ||
-		(positionX+1 == positionXOfMoney && positionY == positionYOfMoney) ||
-		(positionX+2 == positionXOfMoney && positionY == positionYOfMoney)){
+		(positionX + 1 == positionXOfMoney && positionY == positionYOfMoney) ||
+		(positionX + 2 == positionXOfMoney && positionY == positionYOfMoney)){
 		
-		positionYOfMoney = 31;
+		positionYOfMoney = MAX_POSITION_Y + 1;
 		money++;
 	}
 }
@@ -165,27 +177,35 @@ void checkDelayTime(int &delayTime, int level, int &previousLevel){
 }
 
 void startGame(){
-	string mapGame[41][31];
-	int positionX = 19; 			// x min = 1, x max = 37
-	int positionY = 28; 			// y min = 0, y max = 28
 	
-	int positionXOfVillain01 = 1;	// x min = 1, x max = 37
-	int positionYOfVillain01 = 0; 	// y min = 0, y max = 28
-	int positionXOfVillain02 = 19; 	// x min = 1, x max = 37
-	int positionYOfVillain02 = 0; 	// y min = 0, y max = 28
-	int positionXOfVillain03 = 37; 	// x min = 1, x max = 37
-	int positionYOfVillain03 = 0; 	// y min = 0, y max = 28
+	string mapGame[LONGITUDE][LATITUDE];
 	
-	int positionXOfMoney01 = 1;		// x min = 1, x max = 40
-	int positionYOfMoney01 = 1; 	// y min = 0, y max = 30
-	int positionXOfMoney02 = 1; 	// x min = 1, x max = 40
-	int positionYOfMoney02 = 5; 	// y min = 0, y max = 30
-	int positionXOfMoney03 = 1; 	// x min = 1, x max = 40
-	int positionYOfMoney03 = 15; 	// y min = 0, y max = 30
-	int positionXOfMoney04 = 1; 	// x min = 1, x max = 40
-	int positionYOfMoney04 = 20; 	// y min = 0, y max = 30
-	int positionXOfMoney05 = 1; 	// x min = 1, x max = 40
-	int positionYOfMoney05 = 27; 	// y min = 0, y max = 30
+	int positionX = HALF_AVAILABLE_LONGITUDE - 1;
+	int positionY = MAX_POSITION_Y;
+	
+	int positionXOfVillain01 = MIN_POSITION_X;
+	int positionYOfVillain01 = MIN_POSITION_Y;
+	
+	int positionXOfVillain02 = HALF_AVAILABLE_LONGITUDE - 1; 
+	int positionYOfVillain02 = MIN_POSITION_Y; 
+	
+	int positionXOfVillain03 = MAX_POSITION_X; 	
+	int positionYOfVillain03 = MIN_POSITION_Y;
+	
+	int positionXOfMoney01 = MIN_POSITION_X;		
+	int positionYOfMoney01 = MIN_POSITION_Y + 1;
+	
+	int positionXOfMoney02 = MIN_POSITION_X;
+	int positionYOfMoney02 = MIN_POSITION_Y + 5; 
+	
+	int positionXOfMoney03 = MIN_POSITION_X;
+	int positionYOfMoney03 = MIN_POSITION_Y + 15;
+	
+	int positionXOfMoney04 = MIN_POSITION_X;
+	int positionYOfMoney04 = MIN_POSITION_Y + 20;
+	
+	int positionXOfMoney05 = MIN_POSITION_X;
+	int positionYOfMoney05 = MIN_POSITION_Y + 27;
 	
 	bool isCollision = false;
 	bool isEven = true;
@@ -217,7 +237,7 @@ void startGame(){
 		sumScoreAndMoveVillain(positionXOfVillain03, positionYOfVillain03, score);
 				
 		moveMoney(positionXOfMoney01, positionYOfMoney01);
-		moveMoney( positionXOfMoney02, positionYOfMoney02);
+		moveMoney(positionXOfMoney02, positionYOfMoney02);
 		moveMoney(positionXOfMoney03, positionYOfMoney03);
 		moveMoney(positionXOfMoney04, positionYOfMoney04);
 		moveMoney(positionXOfMoney05, positionYOfMoney05);
