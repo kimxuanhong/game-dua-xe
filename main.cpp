@@ -87,15 +87,15 @@ void setMoneyToMapGame(int positionX, int positionY, string mapGame[LONGITUDE][L
 }
 
 void showGameOver(string mapGame[LONGITUDE][LATITUDE]){
-	mapGame[15][15] = "G";
-	mapGame[16][15] = "A";
-	mapGame[17][15] = "M";
-	mapGame[18][15] = "E";
-	mapGame[19][15] = " ";
-	mapGame[20][15] = "O";
-	mapGame[21][15] = "V";
-	mapGame[22][15] = "E";
-	mapGame[23][15] = "R";
+	mapGame[HALF_AVAILABLE_LONGITUDE - 4][15] = "G";
+	mapGame[HALF_AVAILABLE_LONGITUDE - 3][15] = "A";
+	mapGame[HALF_AVAILABLE_LONGITUDE - 2][15] = "M";
+	mapGame[HALF_AVAILABLE_LONGITUDE - 1][15] = "E";
+	mapGame[HALF_AVAILABLE_LONGITUDE][15] 	  = " ";
+	mapGame[HALF_AVAILABLE_LONGITUDE + 1][15] = "O";
+	mapGame[HALF_AVAILABLE_LONGITUDE + 2][15] = "V";
+	mapGame[HALF_AVAILABLE_LONGITUDE + 3][15] = "E";
+	mapGame[HALF_AVAILABLE_LONGITUDE + 4][15] = "R";
 }
 
 void remoteProtagonist(int &positionX, int &positionY){
@@ -176,6 +176,16 @@ void checkDelayTime(int &delayTime, int level, int &previousLevel){
 	}
 }
 
+void insertPlayerName(){
+	fflush(stdin);
+	cin.clear(); 
+	cout << "Nhap ten cua ban: "; 
+	cin >> userHighScore; 
+	cout << "Ten ban la: " << userHighScore << endl;
+	cin.clear(); 							
+	Sleep(1000);
+}
+
 void startGame(){
 	
 	string mapGame[LONGITUDE][LATITUDE];
@@ -232,6 +242,7 @@ void startGame(){
 		setVillainToMapGame(positionXOfVillain01, positionYOfVillain01, mapGame); 
 		setVillainToMapGame(positionXOfVillain02, positionYOfVillain02, mapGame);
 		setVillainToMapGame(positionXOfVillain03, positionYOfVillain03, mapGame);
+		
 
 		
 		sumScoreAndMoveVillain(positionXOfVillain01, positionYOfVillain01, score);
@@ -266,13 +277,8 @@ void startGame(){
 		
 		if(isCollision){
 			if(score > highScore){
-				fflush(stdin);
-				cin.clear(); 
 				highScore = score;
 				highMoney = money;
-				cout << "Nhap ten cua ban: "; 
-				cin >> userHighScore; 
-				cout << "Ten ban la: " << userHighScore << endl; 
 			}
 			
 			bool exit = false;
@@ -283,7 +289,6 @@ void startGame(){
 			} while(!exit);
 			
 			Sleep(1000);
-			
 			break;
 		}
 				
@@ -299,8 +304,9 @@ void startGame(){
 
 void showMenu(int row) {
 	system("cls");
-	string menu[] = {"New Game", "High Score", "Exit Game"};
-	for(int index = 0; index < 3; index ++){
+	cout << "Press spacebar to select!" << endl << endl;
+	string menu[] = {"New Game", "High Score", "Inset Name", "Exit Game"};
+	for(int index = 0; index < 4; index ++){
 		if(index == row){
 			cout << "> " << menu[index] << endl;
 		} else {
@@ -317,7 +323,7 @@ void selectMenuHandler(int &slectedItem){
 	while(true){
 		if(GetAsyncKeyState(VK_UP)){
 			if(slectedItem == 0) {
-				slectedItem = 3;
+				slectedItem = 4;
 			}
 			slectedItem--;
 			showMenu(slectedItem);
@@ -325,7 +331,7 @@ void selectMenuHandler(int &slectedItem){
 		}
 		
 		if(GetAsyncKeyState(VK_DOWN)){
-			if(slectedItem == 2) {
+			if(slectedItem == 3) {
 				slectedItem = -1;
 			}
 			slectedItem++;
@@ -333,7 +339,7 @@ void selectMenuHandler(int &slectedItem){
 			Sleep(200);	
 		}
 		
-		if(GetAsyncKeyState(VK_RETURN)){
+		if(GetAsyncKeyState(VK_SPACE)){
 			Sleep(200);
 			return;
 		}
@@ -366,10 +372,13 @@ int main(){
 		
 		if(slectedItem == 0) {
 			startGame();
-		} else {
+		} else if(slectedItem == 1){
 			showHighscore();
+		} else if(slectedItem == 2){
+			insertPlayerName();
 		}
-	} while(slectedItem != 2);
+		
+	} while(slectedItem != 3);
 	
     getch();
     return 0;
