@@ -65,6 +65,10 @@ void setVillainToMapGame(int positionX, int positionY, string mapGame[41][31]){
 	mapGame[positionX + 2][positionY + 2] = "O";
 }
 
+void setMoneyToMapGame(int positionX, int positionY, string mapGame[41][31]){
+	mapGame[positionX][positionY] = 		"$";
+}
+
 void showGameOver(string mapGame[41][31]){
 	mapGame[15][15] = "G";
 	mapGame[16][15] = "A";
@@ -115,20 +119,62 @@ void showScore(int score, int money, int level){
 	cout << "Money: " << money << endl;
 }
 
+void sumScoreAndMoveVillain(int &positionX, int &positionY, int &score){
+    if(positionY > 29) {
+    	++score;
+    	positionY = rand() % 5; // rand from 0 to 5
+     	positionX = 1 + rand() % 37; // rand from 1 to 37	
+	} else {
+		++positionY;
+	}
+}
+
+void moveMoney(int &positionX, int &positionY){
+    if(positionY >= 30) {
+    	positionY = rand() % 5; // rand from 0 to 5
+     	positionX = 1 + rand() % 40; // rand from 1 to 37	
+	} else {
+		++positionY;
+	}
+}
+
+void sumMoney(int positionX, int positionY, int positionXOfMoney, int positionYOfMoney, int &money){
+	if(	(positionX == positionXOfMoney && positionY == positionYOfMoney) ||
+		(positionX+1 == positionXOfMoney && positionY == positionYOfMoney) ||
+		(positionX+2 == positionXOfMoney && positionY == positionYOfMoney)){
+			
+		money++;
+	}
+}
+
 void startGame(){
 	string mapGame[41][31];
 	int positionX = 19; 			// x min = 1, x max = 37
-	int positionY = 28; 			// y min = 0, y max = 28,
+	int positionY = 28; 			// y min = 0, y max = 28
 	
 	int positionXOfVillain01 = 1;	// x min = 1, x max = 37
-	int positionYOfVillain01 = 0; 	// y min = 0, y max = 28,
+	int positionYOfVillain01 = 0; 	// y min = 0, y max = 28
 	int positionXOfVillain02 = 19; 	// x min = 1, x max = 37
-	int positionYOfVillain02 = 0; 	// y min = 0, y max = 28,
+	int positionYOfVillain02 = 0; 	// y min = 0, y max = 28
 	int positionXOfVillain03 = 37; 	// x min = 1, x max = 37
-	int positionYOfVillain03 = 0; 	// y min = 0, y max = 28,
+	int positionYOfVillain03 = 0; 	// y min = 0, y max = 28
+	
+	int positionXOfMoney01 = 1;		// x min = 1, x max = 40
+	int positionYOfMoney01 = 1; 	// y min = 0, y max = 30
+	int positionXOfMoney02 = 1; 	// x min = 1, x max = 40
+	int positionYOfMoney02 = 5; 	// y min = 0, y max = 30
+	int positionXOfMoney03 = 1; 	// x min = 1, x max = 40
+	int positionYOfMoney03 = 15; 	// y min = 0, y max = 30
+	int positionXOfMoney04 = 1; 	// x min = 1, x max = 40
+	int positionYOfMoney04 = 20; 	// y min = 0, y max = 30
+	int positionXOfMoney05 = 1; 	// x min = 1, x max = 40
+	int positionYOfMoney05 = 27; 	// y min = 0, y max = 30
 	
 	bool isCollision = false;
 	bool isEven = true;
+	int score = 0;
+	int money = 0;
+	int level = 1;
 	
 	while(true){
 		
@@ -136,13 +182,31 @@ void startGame(){
 		intMapGame(mapGame, isEven);
 		isEven = !isEven;
 		
-		positionYOfVillain01 = positionYOfVillain01 <=  29 ? ++positionYOfVillain01 : 0;
-		positionYOfVillain02 = positionYOfVillain02 <=  29 ? ++positionYOfVillain02 : 0;
-		positionYOfVillain03 = positionYOfVillain03 <=  29 ? ++positionYOfVillain03 : 0;
-		
 		setVillainToMapGame(positionXOfVillain01, positionYOfVillain01, mapGame); 
 		setVillainToMapGame(positionXOfVillain02, positionYOfVillain02, mapGame);
 		setVillainToMapGame(positionXOfVillain03, positionYOfVillain03, mapGame);
+		
+		setMoneyToMapGame(positionXOfMoney01, positionYOfMoney01, mapGame);
+		setMoneyToMapGame(positionXOfMoney02, positionYOfMoney02, mapGame);
+		setMoneyToMapGame(positionXOfMoney03, positionYOfMoney03, mapGame);
+		setMoneyToMapGame(positionXOfMoney04, positionYOfMoney04, mapGame);
+		setMoneyToMapGame(positionXOfMoney05, positionYOfMoney05, mapGame);
+		
+		sumScoreAndMoveVillain(positionXOfVillain01, positionYOfVillain01, score);
+		sumScoreAndMoveVillain(positionXOfVillain02, positionYOfVillain02, score);
+		sumScoreAndMoveVillain(positionXOfVillain03, positionYOfVillain03, score);
+				
+		moveMoney(positionXOfMoney01, positionYOfMoney01);
+		moveMoney( positionXOfMoney02, positionYOfMoney02);
+		moveMoney(positionXOfMoney03, positionYOfMoney03);
+		moveMoney(positionXOfMoney04, positionYOfMoney04);
+		moveMoney(positionXOfMoney05, positionYOfMoney05);
+		
+		sumMoney(positionX, positionY, positionXOfMoney01, positionYOfMoney01, money);
+		sumMoney(positionX, positionY, positionXOfMoney02, positionYOfMoney02, money);
+		sumMoney(positionX, positionY, positionXOfMoney03, positionYOfMoney03, money);
+		sumMoney(positionX, positionY, positionXOfMoney04, positionYOfMoney04, money);
+		sumMoney(positionX, positionY, positionXOfMoney05, positionYOfMoney05, money);
 		
 		setProtagonistToMapGame(positionX, positionY, mapGame); 
 		
@@ -156,7 +220,7 @@ void startGame(){
 		}
 
 		drawMapGame(mapGame);
-		showScore(1, 200, 10);
+		showScore(score, money, level);
 		
 		if(isCollision){
 			Sleep(1000);
@@ -215,7 +279,7 @@ void selectMenuHandler(int &slectedItem){
 int main(){
 	
 	resizeConsole(370, 650);
-	int slectedItem = 0; // start game as selected default
+	int slectedItem = 0; // selected start game as default
 	
 	do {
 		selectMenuHandler(slectedItem);
