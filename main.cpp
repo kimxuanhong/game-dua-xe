@@ -14,6 +14,11 @@ void textcolor(int x);
 void gotoxy(int x, int y);
 void Clearscreen();
 
+//Global and Static variables
+int highScore = 0;
+int highMoney = 0;
+string userHighScore = "Nobody";
+
 
 void intMapGame(string mapGame[41][31], bool isEven){	
 	for(int y=0; y <= 30; y++){
@@ -147,6 +152,17 @@ void sumMoney(int positionX, int positionY, int positionXOfMoney, int positionYO
 	}
 }
 
+void checkLevel(int score, int &level){
+	level = score / 10;
+}
+
+void checkDelayTime(int &delayTime, int level, int &previousLevel){
+	if(level != previousLevel && delayTime > 3){
+		delayTime -= 3;
+		previousLevel = level;
+	}
+}
+
 void startGame(){
 	string mapGame[41][31];
 	int positionX = 19; 			// x min = 1, x max = 37
@@ -175,6 +191,9 @@ void startGame(){
 	int score = 0;
 	int money = 0;
 	int level = 1;
+	int previousLevel = 1;
+	int delayTime = 50;
+	
 	
 	while(true){
 		
@@ -223,12 +242,35 @@ void startGame(){
 		showScore(score, money, level);
 		
 		if(isCollision){
+			if(score > highScore){
+				fflush(stdin);
+				cin.clear(); 
+				highScore = score;
+				highMoney = money;
+				cout << "Nhap ten cua ban: "; 
+				cin >> userHighScore; 
+				cout << "Ten ban la: " << userHighScore << endl; 
+			}
+			
+			bool exit = false;
+			do{
+				if(GetAsyncKeyState(VK_RETURN)){
+					exit = true;
+				}
+			} while(!exit);
+			
 			Sleep(1000);
+			
 			break;
 		}
 				
 		remoteProtagonist(positionX, positionY);
-		Sleep(10);
+		
+		checkLevel(score, level);
+		
+		checkDelayTime(delayTime, level, previousLevel);
+		
+		Sleep(delayTime);
 	}
 }
 
@@ -275,6 +317,21 @@ void selectMenuHandler(int &slectedItem){
 	}
 }
 
+void showHighscore(){
+	system("cls");
+	cin.clear();
+	cout << "Score: " << highScore << endl;
+	cout << "Money: " << highMoney << endl;
+	cout << "User: " << userHighScore << endl;
+	bool exit = false;
+	do{
+		if(GetAsyncKeyState(VK_RETURN)){
+			exit = true;
+		}
+	} while(!exit);		
+	cin.clear();		
+	Sleep(1000);
+}
 
 int main(){
 	
@@ -287,7 +344,7 @@ int main(){
 		if(slectedItem == 0) {
 			startGame();
 		} else {
-			//view high score
+			showHighscore();
 		}
 	} while(slectedItem != 2);
 	
