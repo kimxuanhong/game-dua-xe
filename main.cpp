@@ -143,11 +143,12 @@ void moveMoney(int &positionX, int &positionY){
 	}
 }
 
-void sumMoney(int positionX, int positionY, int positionXOfMoney, int positionYOfMoney, int &money){
+void sumMoney(int positionX, int positionY, int &positionXOfMoney, int &positionYOfMoney, int &money){
 	if(	(positionX == positionXOfMoney && positionY == positionYOfMoney) ||
 		(positionX+1 == positionXOfMoney && positionY == positionYOfMoney) ||
 		(positionX+2 == positionXOfMoney && positionY == positionYOfMoney)){
-			
+		
+		positionYOfMoney = 31;
 		money++;
 	}
 }
