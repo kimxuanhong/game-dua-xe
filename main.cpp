@@ -105,7 +105,7 @@ void remoteProtagonist(int &positionX, int &positionY){
 	    }
 	}
 	if(GetAsyncKeyState(VK_RIGHT)){
-	    if(positionX <= MAX_POSITION_X) {
+	    if(positionX < MAX_POSITION_X) {
 	        positionX++;
 	    }
 	}
@@ -160,7 +160,7 @@ void sumMoney(int positionX, int positionY, int &positionXOfMoney, int &position
 		(positionX + 1 == positionXOfMoney && positionY == positionYOfMoney) ||
 		(positionX + 2 == positionXOfMoney && positionY == positionYOfMoney)){
 		
-		positionYOfMoney = MAX_POSITION_Y + 1;
+		positionYOfMoney = AVAILABLE_LATITUDE + 1;
 		money++;
 	}
 }
@@ -192,20 +192,21 @@ void startGame(){
 	int positionXOfVillain03 = MAX_POSITION_X; 	
 	int positionYOfVillain03 = MIN_POSITION_Y;
 	
-	int positionXOfMoney01 = MIN_POSITION_X;		
-	int positionYOfMoney01 = MIN_POSITION_Y + 1;
 	
-	int positionXOfMoney02 = MIN_POSITION_X;
-	int positionYOfMoney02 = MIN_POSITION_Y + 5; 
+	int positionXOfMoney01 = MIN_POSITION_X + 1;		
+	int positionYOfMoney01 = MIN_POSITION_Y ;
 	
-	int positionXOfMoney03 = MIN_POSITION_X;
-	int positionYOfMoney03 = MIN_POSITION_Y + 15;
+	int positionXOfMoney02 = MIN_POSITION_X  + 10;
+	int positionYOfMoney02 = MIN_POSITION_Y; 
 	
-	int positionXOfMoney04 = MIN_POSITION_X;
-	int positionYOfMoney04 = MIN_POSITION_Y + 20;
+	int positionXOfMoney03 = MIN_POSITION_X + 20;
+	int positionYOfMoney03 = MIN_POSITION_Y;
 	
-	int positionXOfMoney05 = MIN_POSITION_X;
-	int positionYOfMoney05 = MIN_POSITION_Y + 27;
+	int positionXOfMoney04 = MIN_POSITION_X  + 30;
+	int positionYOfMoney04 = MIN_POSITION_Y;
+	
+	int positionXOfMoney05 = MAX_POSITION_X;
+	int positionYOfMoney05 = MIN_POSITION_Y ;
 	
 	bool isCollision = false;
 	bool isEven = true;
@@ -222,15 +223,16 @@ void startGame(){
 		intMapGame(mapGame, isEven);
 		isEven = !isEven;
 		
-		setVillainToMapGame(positionXOfVillain01, positionYOfVillain01, mapGame); 
-		setVillainToMapGame(positionXOfVillain02, positionYOfVillain02, mapGame);
-		setVillainToMapGame(positionXOfVillain03, positionYOfVillain03, mapGame);
-		
 		setMoneyToMapGame(positionXOfMoney01, positionYOfMoney01, mapGame);
 		setMoneyToMapGame(positionXOfMoney02, positionYOfMoney02, mapGame);
 		setMoneyToMapGame(positionXOfMoney03, positionYOfMoney03, mapGame);
 		setMoneyToMapGame(positionXOfMoney04, positionYOfMoney04, mapGame);
 		setMoneyToMapGame(positionXOfMoney05, positionYOfMoney05, mapGame);
+		
+		setVillainToMapGame(positionXOfVillain01, positionYOfVillain01, mapGame); 
+		setVillainToMapGame(positionXOfVillain02, positionYOfVillain02, mapGame);
+		setVillainToMapGame(positionXOfVillain03, positionYOfVillain03, mapGame);
+
 		
 		sumScoreAndMoveVillain(positionXOfVillain01, positionYOfVillain01, score);
 		sumScoreAndMoveVillain(positionXOfVillain02, positionYOfVillain02, score);
