@@ -170,8 +170,8 @@ void checkLevel(int score, int &level){
 }
 
 void checkDelayTime(int &delayTime, int level, int &previousLevel){
-	if(level != previousLevel && delayTime > 3){
-		delayTime -= 3;
+	if(level != previousLevel && delayTime >= 10){
+		delayTime -= 2;
 		previousLevel = level;
 	}
 }
